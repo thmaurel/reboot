@@ -18,6 +18,7 @@ puts "--------------------"
 puts "Welcome to Instacart"
 puts "--------------------"
 # Display what's in the store today
+# STEP3: Display the quantity available
 puts "In our store today:"
 store.each do |product, infos|
   puts "#{product}: #{infos[:price]}€ (#{infos[:quantity]} available)"
@@ -39,9 +40,11 @@ until answer == "quit"
     puts "How many?"
     # STEP2: Store his answer into a variable
     quantity = gets.chomp.to_i
+    # STEP3: If the quantity asked is available
     if quantity <= store[answer][:quantity]
       # STEP2: Add his answer with quantity into the cart (hash)
       cart[answer] = quantity
+    # STEP3: else display an error message
     else
       puts "Sorry there are only #{store[answer][:quantity]} #{answer} left.."
     end
@@ -58,6 +61,7 @@ end
 bill = 0
 # STEP2: Iterate over the hash 'cart' and take into account the quantity
 # STEP2: Display for every item the details of the price
+# STEP3: Update the computation to read properly the store infos
 cart.each do |product, quantity|
   bill += store[product][:price] * quantity
   puts "#{product}: #{quantity} X #{store[product][:price]}€ = #{quantity * store[product][:price]}€"
