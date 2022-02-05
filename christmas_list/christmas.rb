@@ -1,4 +1,6 @@
 # christmas.rb
+require 'open-uri'
+require 'nokogiri'
 
 # STEP2.5: Refacto the list action into a method
 # STEP5: Update the list method to display the gift name & if it was bought or not
@@ -39,4 +41,40 @@ def mark(gift_list)
   index_mark = gets.chomp.to_i - 1
   # STEP 5.5: Update our gift list to take his answer into account
   gift_list[index_mark][:bought] = true
+end
+
+
+def idea(gift_list)
+  # Ask the user what he wants to look for
+  puts "What are you looking for on Etsy?"
+  # Store his answer into a variable
+  idea = gets.chomp
+  # Display introduction text for results
+  puts "Here are Etsy results for \"#{idea}\":"
+  # Generate the url based on his idea
+  url = "https://www.etsy.com/fr/search?q=#{idea}"
+  # Open the URL & read it
+  html_content = URI.open(url).read
+  # Parse with Nokogiri the html
+  doc = Nokogiri::HTML(html_content)
+  suggestions = []
+  # Take the first 4 suggestions displayed
+  doc.search('.v2-listing-card__title').first(4).each do |element|
+    # Push them inside an array
+    suggestions << element.text.strip
+  end
+  # Display the 4 suggestions
+  suggestions.each_with_index do |suggestion, index|
+    puts "#{index + 1} - #{suggestion}"
+  end
+  # Ask the user which one he wants to add to his gift list
+  puts "Pick one to add to your list (give the number)"
+  # Store his answer into a variable
+  index_to_add = gets.chomp.to_i - 1
+  # Find the associated idea
+  item_to_add = suggestions[index_to_add]
+  # Add it to the gift list
+  gift_list << {name: item_to_add, bought: false}
+  # Display a confirmation text
+  puts "\"#{item_to_add}\" added to your wishlist"
 end
